@@ -14,8 +14,16 @@ function EditEventPage() {
     axios.get(`http://localhost:5000/api/events/${id}`)
       .then(response => {
         const event = response.data;
+        const eventDate = new Date(event.date);
+        // タイムゾーンのずれを修正し、日本のタイムゾーンで表示
+        const formattedDate = new Date(eventDate.getTime() + eventDate.getTimezoneOffset() * 60000)
+          .toLocaleDateString('ja-JP', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          });
         setName(event.name);
-        setDate(event.date.split('T')[0]); // 日付をフォーマット
+        setDate(formattedDate); // 日本語でフォーマットされた日付をセット
         setLocation(event.location);
         setDescription(event.description);
       })
@@ -44,7 +52,7 @@ function EditEventPage() {
       </label>
       <label>
         Date:
-        <input type="date" value={date} onChange={e => setDate(e.target.value)} required />
+        <input type="text" value={date} readOnly />
       </label>
       <label>
         Location:

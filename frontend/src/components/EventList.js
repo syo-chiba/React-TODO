@@ -18,12 +18,25 @@ function EventList({ events, onDelete }) {
       });
   };
 
+  // 日付フォーマット関数
+  const formatDate = (dateString) => {
+    const eventDate = new Date(dateString);
+    // タイムゾーンのずれを修正し、日本のタイムゾーンで表示
+    const formattedDate = new Date(eventDate.getTime() + eventDate.getTimezoneOffset() * 60000)
+      .toLocaleDateString('ja-JP', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    return formattedDate;
+  };
+
   return (
     <ul className="event-list">
       {events.map(event => (
         <li key={event.id} className="event-item">
           <h2>{event.name}</h2>
-          <p>Date: {event.date}</p>
+          <p>Date: {formatDate(event.date)}</p> {/* 日付をフォーマットして表示 */}
           <p>Location: {event.location}</p>
           <p>Description: {event.description}</p>
           <Link to={`/edit/${event.id}`} className="edit">Edit</Link>
